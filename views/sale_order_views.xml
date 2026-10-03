@@ -1,0 +1,35 @@
+<odoo>
+
+    <record id="view_order_form_approval" model="ir.ui.view">
+        <field name="name">sale.order.form.approval</field>
+        <field name="model">sale.order</field>
+        <!-- inherit_id: we are patching sale's own form view, not
+             replacing it -->
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- insert the discount field next to payment terms -->
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="discount_percent"/>
+            </xpath>
+
+            <!-- add Approve / Reject buttons, visible only in the
+                 to_approve state and only to the approver group -->
+            <xpath expr="//button[@name='action_confirm']" position="after">
+                <button name="action_approve"
+                        string="Approve"
+                        type="object"
+                        class="btn-primary"
+                        invisible="state != 'to_approve'"
+                        groups="sale_approval.group_sale_approver"/>
+                <button name="action_reject"
+                        string="Reject"
+                        type="object"
+                        invisible="state != 'to_approve'"
+                        groups="sale_approval.group_sale_approver"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
